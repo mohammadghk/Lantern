@@ -9,20 +9,38 @@
 /* Begin PBXBuildFile section */
 		04716FDE21BBBF580040B8C0 /* Lantern.h in Headers */ = {isa = PBXBuildFile; fileRef = 04716FDC21BBBF580040B8C0 /* Lantern.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		04D9989C21CBABB10088E5CF /* Lantern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D9989B21CBABB10088E5CF /* Lantern.swift */; };
-		3CD3A073190449C8310166F4 /* Pods_Lantern.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73A3EEE10B9576AC924DDEF /* Pods_Lantern.framework */; };
+		D377BFE922FFEAB6006E232F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D377BFE822FFEAB6006E232F /* AppDelegate.swift */; };
+		D377BFEB22FFEAB6006E232F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D377BFEA22FFEAB6006E232F /* ViewController.swift */; };
+		D377BFEE22FFEAB6006E232F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D377BFEC22FFEAB6006E232F /* Main.storyboard */; };
+		D377BFF022FFEAB8006E232F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D377BFEF22FFEAB8006E232F /* Assets.xcassets */; };
+		D377BFF322FFEAB8006E232F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D377BFF122FFEAB8006E232F /* LaunchScreen.storyboard */; };
+		D377BFFB22FFEB87006E232F /* BaseResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D377BFFA22FFEB87006E232F /* BaseResult.swift */; };
+		D377BFFC22FFF0DC006E232F /* Lantern.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04716FD921BBBF580040B8C0 /* Lantern.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D377BFFD22FFF0F2006E232F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04716FD021BBBF580040B8C0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04716FD821BBBF580040B8C0;
+			remoteInfo = Lantern;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		04716FD921BBBF580040B8C0 /* Lantern.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lantern.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04716FDC21BBBF580040B8C0 /* Lantern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lantern.h; sourceTree = "<group>"; };
 		04716FDD21BBBF580040B8C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04D9989B21CBABB10088E5CF /* Lantern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lantern.swift; sourceTree = "<group>"; };
-		07F8A8DCCF1C38C660D38352 /* Pods-Lantern-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lantern-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lantern-Example/Pods-Lantern-Example.release.xcconfig"; sourceTree = "<group>"; };
-		A7A60D27FC9E989639F68F94 /* Pods-Lantern-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lantern-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lantern-Example/Pods-Lantern-Example.debug.xcconfig"; sourceTree = "<group>"; };
-		C3A8497B1C466EA9E08A7C31 /* Pods_Lantern_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lantern_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D656271DEDB0CFDA2F27FA17 /* Pods-Lantern.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lantern.release.xcconfig"; path = "Pods/Target Support Files/Pods-Lantern/Pods-Lantern.release.xcconfig"; sourceTree = "<group>"; };
-		D73A3EEE10B9576AC924DDEF /* Pods_Lantern.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Lantern.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E495E73A01888C81DF2FFAD2 /* Pods-Lantern.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Lantern.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Lantern/Pods-Lantern.debug.xcconfig"; sourceTree = "<group>"; };
+		D377BFE622FFEAB6006E232F /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D377BFE822FFEAB6006E232F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D377BFEA22FFEAB6006E232F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D377BFED22FFEAB6006E232F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D377BFEF22FFEAB8006E232F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D377BFF222FFEAB8006E232F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D377BFF422FFEAB8006E232F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D377BFFA22FFEB87006E232F /* BaseResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,7 +48,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CD3A073190449C8310166F4 /* Pods_Lantern.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D377BFE322FFEAB6006E232F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D377BFFC22FFF0DC006E232F /* Lantern.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,9 +66,8 @@
 			isa = PBXGroup;
 			children = (
 				04716FDB21BBBF580040B8C0 /* Lantern */,
+				D377BFE722FFEAB6006E232F /* Example */,
 				04716FDA21BBBF580040B8C0 /* Products */,
-				E04F1BC78398469B4C47CA50 /* Pods */,
-				DC94A48DFA8DEBD9AA728513 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -51,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				04716FD921BBBF580040B8C0 /* Lantern.framework */,
+				D377BFE622FFEAB6006E232F /* Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,24 +90,18 @@
 			path = Lantern;
 			sourceTree = "<group>";
 		};
-		DC94A48DFA8DEBD9AA728513 /* Frameworks */ = {
+		D377BFE722FFEAB6006E232F /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				D73A3EEE10B9576AC924DDEF /* Pods_Lantern.framework */,
-				C3A8497B1C466EA9E08A7C31 /* Pods_Lantern_Example.framework */,
+				D377BFFA22FFEB87006E232F /* BaseResult.swift */,
+				D377BFE822FFEAB6006E232F /* AppDelegate.swift */,
+				D377BFEA22FFEAB6006E232F /* ViewController.swift */,
+				D377BFEC22FFEAB6006E232F /* Main.storyboard */,
+				D377BFEF22FFEAB8006E232F /* Assets.xcassets */,
+				D377BFF122FFEAB8006E232F /* LaunchScreen.storyboard */,
+				D377BFF422FFEAB8006E232F /* Info.plist */,
 			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E04F1BC78398469B4C47CA50 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				E495E73A01888C81DF2FFAD2 /* Pods-Lantern.debug.xcconfig */,
-				D656271DEDB0CFDA2F27FA17 /* Pods-Lantern.release.xcconfig */,
-				A7A60D27FC9E989639F68F94 /* Pods-Lantern-Example.debug.xcconfig */,
-				07F8A8DCCF1C38C660D38352 /* Pods-Lantern-Example.release.xcconfig */,
-			);
-			name = Pods;
+			path = Example;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -103,7 +122,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04716FE121BBBF580040B8C0 /* Build configuration list for PBXNativeTarget "Lantern" */;
 			buildPhases = (
-				721E423328DFD0A99343D02B /* [CP] Check Pods Manifest.lock */,
 				04716FD421BBBF580040B8C0 /* Headers */,
 				04716FD521BBBF580040B8C0 /* Sources */,
 				04716FD621BBBF580040B8C0 /* Frameworks */,
@@ -118,19 +136,40 @@
 			productReference = 04716FD921BBBF580040B8C0 /* Lantern.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		D377BFE522FFEAB6006E232F /* Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D377BFF722FFEAB8006E232F /* Build configuration list for PBXNativeTarget "Example" */;
+			buildPhases = (
+				D377BFE222FFEAB6006E232F /* Sources */,
+				D377BFE322FFEAB6006E232F /* Frameworks */,
+				D377BFE422FFEAB6006E232F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D377BFFE22FFF0F2006E232F /* PBXTargetDependency */,
+			);
+			name = Example;
+			productName = Example;
+			productReference = D377BFE622FFEAB6006E232F /* Example.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		04716FD021BBBF580040B8C0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1030;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Mohammad Ghasemi";
 				TargetAttributes = {
 					04716FD821BBBF580040B8C0 = {
 						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1030;
+					};
+					D377BFE522FFEAB6006E232F = {
+						CreatedOnToolsVersion = 10.3;
 					};
 				};
 			};
@@ -148,6 +187,7 @@
 			projectRoot = "";
 			targets = (
 				04716FD821BBBF580040B8C0 /* Lantern */,
+				D377BFE522FFEAB6006E232F /* Example */,
 			);
 		};
 /* End PBXProject section */
@@ -160,32 +200,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		721E423328DFD0A99343D02B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
+		D377BFE422FFEAB6006E232F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Lantern-checkManifestLockResult.txt",
+				D377BFF322FFEAB8006E232F /* LaunchScreen.storyboard in Resources */,
+				D377BFF022FFEAB8006E232F /* Assets.xcassets in Resources */,
+				D377BFEE22FFEAB6006E232F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
-/* End PBXShellScriptBuildPhase section */
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		04716FD521BBBF580040B8C0 /* Sources */ = {
@@ -196,7 +221,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D377BFE222FFEAB6006E232F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D377BFEB22FFEAB6006E232F /* ViewController.swift in Sources */,
+				D377BFFB22FFEB87006E232F /* BaseResult.swift in Sources */,
+				D377BFE922FFEAB6006E232F /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D377BFFE22FFF0F2006E232F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04716FD821BBBF580040B8C0 /* Lantern */;
+			targetProxy = D377BFFD22FFF0F2006E232F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D377BFEC22FFEAB6006E232F /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D377BFED22FFEAB6006E232F /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D377BFF122FFEAB8006E232F /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D377BFF222FFEAB8006E232F /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		04716FDF21BBBF580040B8C0 /* Debug */ = {
@@ -323,13 +385,11 @@
 		};
 		04716FE221BBBF580040B8C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E495E73A01888C81DF2FFAD2 /* Pods-Lantern.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6ARY9K8262;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -344,20 +404,18 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		04716FE321BBBF580040B8C0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D656271DEDB0CFDA2F27FA17 /* Pods-Lantern.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6ARY9K8262;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -371,7 +429,43 @@
 				PRODUCT_BUNDLE_IDENTIFIER = mohyco.Lantern;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D377BFF522FFEAB8006E232F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mohyco.Example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D377BFF622FFEAB8006E232F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mohyco.Example;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -393,6 +487,15 @@
 			buildConfigurations = (
 				04716FE221BBBF580040B8C0 /* Debug */,
 				04716FE321BBBF580040B8C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D377BFF722FFEAB8006E232F /* Build configuration list for PBXNativeTarget "Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D377BFF522FFEAB8006E232F /* Debug */,
+				D377BFF622FFEAB8006E232F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

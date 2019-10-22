@@ -2,7 +2,7 @@
 //  Lantern.h
 //  Lantern
 //
-//  Created by mac on 12/8/18.
+//  Created by 2019 Mohammad Ghasemi on 12/8/18.
 //  Copyright © 2018 Mohammad Ghasemi. All rights reserved.
 //
 

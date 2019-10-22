@@ -5,222 +5,124 @@
 //  Created by Mohammad on 12/8/16.
 //  Copyright © 2016 Mohammad Ghasemi. All rights reserved.
 //
-/// Usage:
-// adopt LanternDelegate in UIViewController and implement onSuccess and onError delegates
-// init an instance of Lantern and set its delegates to self and parameters
-// use call to send GET and use post to send POST requests
 
 import Foundation
-import Alamofire
-import ObjectMapper
 
-public protocol LanternDelegate  : class {
-    
-    func onSuccess(result : Any?, requestId : String?)
-    func onError(error : Any?, requestId : String?)
-    func onTimeOut(error: String?, requestId: String?) // Optional
-}
 
-public extension LanternDelegate{
-    func onTimeOut(error: String?, requestId: String?){
-        
-    }
-}
+open class Lantern<S: Codable> {
 
-///  - S: type of result object
-public class Lantern<S: BaseMappable,E:BaseMappable> {
-    weak var delegate : LanternDelegate?
-    var handler : String!
+    var url : String!
     var requestId : String?
-    var params : Dictionary<String, String>?
-    private var error : MGError?
+    var params : [String:String]?
+    var method : String = "GET"
+    var bodyData: Data?
+    var request : URLRequest!
     
-    private var headers: HTTPHeaders = Alamofire.SessionManager.defaultHTTPHeaders
-    //            "Os_Version" : "\(systemVersion)"
-    //    let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
-    //    let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
-    //    let systemVersion = UIDevice.current.systemVersion
+    var headers: [String:String] = [:]//Alamofire.SessionManager.defaultHTTPHeaders
     
-    init(delegate: LanternDelegate,handler : String!,params : Dictionary<String,String>?, requestId : String?) {
-        self.delegate = delegate
-        self.handler = handler
-        self.requestId = requestId
+    public init(url : String!,method: HTTPMethod,params : [String:String]? = nil,bodyData:Data? = nil) {
+        self.url = url
+        self.method = method.rawValue
         self.params = params
+        self.bodyData = bodyData
     }
     
-    func appendHeader(param: [String:String]){
+    public func appendHeader(param: [String:String]){
         for (key,value) in param{
             headers[key] = value
         }
     }
     
+    public func setAuthorizationHeader(username: String, password: String){
+        guard let data = "\(username):\(password)".data(using: .utf8) else { return }
+        
+        let base64 = data.base64EncodedString()
+        request.setValue("Basic \(base64)", forHTTPHeaderField: "Authorization")
+    }
+    
+    private func setParams(parameters: [String:String]?){
+        if let params = parameters{
+            var components = URLComponents(string: url)!
+            components.queryItems = params.map { (key,value) in
+                URLQueryItem(name: key, value: value)
+            }
+            components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+            self.request = URLRequest(url: components.url!)
+        }else{
+            self.request = URLRequest(url: URL(string: self.url)!)
+        }
+    }
+    
+    private func setDefaultHeaders(){
+        self.request.allHTTPHeaderFields = self.headers
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+    }
+    
     //MARK: - HTTP Post and Call
     
-    func call() {
+    public func emit(completion: @escaping (S?, HTTPURLResponse?, Error?) -> ()){
+        setParams(parameters: params)
+        setDefaultHeaders()
         
-        self.handler = self.handler.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        Alamofire.request(self.handler,parameters : params, headers : headers).responseJSON { response in
-            print("URL Called : \(String(describing: response.request))")
-            if response.response != nil{
-                
-                let res = Mapper<S>().map(JSONObject: response.result.value)
-                let err = Mapper<E>().map(JSONObject: response.result.value)
-                switch response.response!.statusCode {
-                case 200 ..< 300 :
-                    self.delegate?.onSuccess(result: res, requestId: self.requestId)
-                    break
-                case 401:
-                    //FIXME: - unauthorized
-                    print("***Error*** : Unauthorized")
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
-                default:
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
-                }
-            }else{
-                self.delegate?.onTimeOut(error: "Connection Error", requestId: self.requestId)
-            }
-        }
-    }
-    
-    /// Post without body
-    func post(){
+        self.request.httpMethod = self.method
         
-        Alamofire.request(self.handler, method: .post, parameters: params, encoding: JSONEncoding.default , headers: headers).responseJSON {
-            response in
-            switch response.result {
-            case .success:
-                let res = Mapper<S>().map(JSONObject: response.result.value)
-                let err = Mapper<E>().map(JSONObject: response.result.value)
-                switch response.response?.statusCode ?? 401{
-                case 200 :
-                    
-                    self.delegate?.onSuccess(result: res, requestId: self.requestId)
-                    break
-                    
-                default :
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
-                }
-                
-                break
-            case .failure(let error):
-                self.delegate?.onTimeOut(error: error.localizedDescription, requestId: self.requestId)
-            }
-        }
-    }
-    
-    
-    /// Post function with body - only one param is needed in case there is a prepared object
-    /// convert that object to json string and use bodyString else if creating parameters
-    /// in a Dictionary convert it to data and use bodyData
-    /// - Parameters:
-    ///   - bodyString: body in json format casted to string
-    ///   - bodyData: body in Dictionary format casted to Data
-    func post(bodyString: String?, bodyData: Data?){
+        var session = URLSession.shared
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 45
+        configuration.timeoutIntervalForResource = 45
+        session = URLSession(configuration: configuration)
         
-        var request = URLRequest(url: URL(string: self.handler)!)
-        request.httpMethod = HTTPMethod.post.rawValue
-        request.allHTTPHeaderFields = headers
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let body = bodyString {
-            let data = (body.data(using: .utf8))! as Data
-            request.httpBody = data
-        }
         
         if let body = bodyData {
             request.httpBody = body
         }
         
-        Alamofire.request(request).responseJSON {
-            response in
-            print("Post URL Called : \(response.request!)")
-            let res = Mapper<S>().map(JSONObject: response.result.value)
-            let err = Mapper<E>().map(JSONObject: response.result.value)
-            switch response.response?.statusCode ?? 401 {
-            case 200 ... 300 :
-                self.delegate?.onSuccess(result: res, requestId: self.requestId)
-                break
-            default :
-                self.delegate?.onError(error: err, requestId: self.requestId) //FIXME: - Unathorized
-                break
-            }
-        }
-    }
-}
-
-class MGError{
-    static let CONNECTION_ERROR : Int = 8009
-    static let UNATHORIZED : Int = 8010
-}
-
-
-//MARK: - MultiPart Uploader
-
-protocol UploadFormDataDelegate : class {
-     func didUploadedSuccesful(result : Any? , requestId: String)
-     func didUploadFailed(error: String? , requestId: String)
-}
-
-class UploadFormData<BaseResult:BaseMappable>{ //FIXME: Make it universal for images and pdf
-    var delegate : UploadFormDataDelegate?
-    var requestId = ""
-    // import Alamofire
-    func uploadWithAlamofire(file : Any , parameters : [String:String]?,destinationUrl: String,requestId: String?) {
-        
-        //        let imageName = "file"//imageName
-        //        let fileName = "file.jpg"//fileName
-        
-        if let reqId = requestId {
-            self.requestId = reqId
-        }
-        
-        //        if imageName == nil {
-        //            imageName = "file"
-        //        }
-        //        if fileName == nil {
-        //            fileName = "file.png"
-        //        }
-        
-        let headers: HTTPHeaders = [:]
-        
-        Alamofire.upload(multipartFormData: { multipartFormData in
+        let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
             
-            if parameters != nil {
-                for (key, value) in parameters! {
-                    multipartFormData.append((value).data(using: .utf8)!, withName: key)
-                }
+            let res = try? JSONDecoder().decode(S.self, from: data!)
+            
+            if error != nil || data == nil {
+                print("Client error!")
+                return
             }
             
-            //            if let imageData = UIImageJPEGRepresentation(Image, 0.7) {
-            //                multipartFormData.append(imageData, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
-            //            }
-            
-            //            multipartFormData.append(pdfData, withName: "pdfDocuments", fileName: namePDF, mimeType:"application/pdf")
-            
-        }, to: destinationUrl, method: .post, headers: headers,
-           encodingCompletion: { encodingResult in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseJSON { response in
-                    
-                    let res = Mapper<BaseResult>().map(JSONObject: response.result.value)
-                    
-                    switch response.result {
-                    case .success:
-                        print("jsonResponse ==== ", response)
-                        self.delegate?.didUploadedSuccesful(result: res ,requestId: self.requestId)
-                    case .failure(let error):
-                        print("error ==== ", error)
-                        self.delegate?.didUploadFailed(error: "Upload failed, try again" , requestId: self.requestId)
-                    }
-                }
-            case .failure(let encodingError):
-                print("error:\(encodingError)")
+            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+                print("Oops!! there is server error!")
+                completion(res, nil , error)
+                return
             }
+            
+            guard let mime = response.mimeType, mime == "application/json" else {
+                print("response is not json")
+                return
+            }
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data!, options: [])
+                print("The Response is : ",json)
+                completion(res, response , error)
+            } catch {
+                print("JSON error: \(error.localizedDescription)")
+                completion(res, response , error)
+            }
+            
         })
+        
+        task.resume()
     }
-    
+}
+
+
+public enum HTTPMethod: String {
+    case options = "OPTIONS"
+    case get     = "GET"
+    case head    = "HEAD"
+    case post    = "POST"
+    case put     = "PUT"
+    case patch   = "PATCH"
+    case delete  = "DELETE"
+    case trace   = "TRACE"
+    case connect = "CONNECT"
 }
 
