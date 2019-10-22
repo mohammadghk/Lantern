@@ -2,11 +2,14 @@
 # platform :ios, '9.0'
 
 target 'Lantern' do
+    
+    use_frameworks!
+    pod 'Alamofire'
+    
+end
 
-  use_frameworks!
-
-  pod 'Alamofire'
-  pod 'ObjectMapper'
-  # Pods for Lantern
-
+target 'Example' do
+    
+    use_frameworks!
+    pod 'Alamofire'
 end

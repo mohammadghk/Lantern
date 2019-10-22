@@ -5,199 +5,128 @@
 //  Created by Mohammad on 12/8/16.
 //  Copyright © 2016 Mohammad Ghasemi. All rights reserved.
 //
-/// Usage:
-// adopt LanternDelegate in UIViewController and implement onSuccess and onError delegates
-// init an instance of Lantern and set its delegates to self and parameters
-// use call to send GET and use post to send POST requests
+
 
 import Foundation
 import Alamofire
-import ObjectMapper
 
-public protocol LanternDelegate  : class {
-    
-    func onSuccess(result : Any?, requestId : String?)
-    func onError(error : Any?, requestId : String?)
-    func onTimeOut(error: String?, requestId: String?) // Optional
-}
 
-public extension LanternDelegate{
-    func onTimeOut(error: String?, requestId: String?){
-        
-    }
-}
-
-///  - S: type of result object
-public class Lantern<S: BaseMappable,E:BaseMappable> {
-    weak var delegate : LanternDelegate?
-    var handler : String!
-    var requestId : String?
-    var params : Dictionary<String, String>?
-    private var error : MGError?
+open class Lantern<S: Codable> {
+    var url : String!
+    var params : [String:String]?
+    var method : HTTPMethod = .get
+    var hasBodyData = false
     
-    private var headers: HTTPHeaders = Alamofire.SessionManager.defaultHTTPHeaders
-    //            "Os_Version" : "\(systemVersion)"
-    //    let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
-    //    let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
-    //    let systemVersion = UIDevice.current.systemVersion
+    private var headers: [String:String] = Alamofire.SessionManager.defaultHTTPHeaders
+//        ["Content-Type": "application/json","accept": "application/json"]
     
-    init(delegate: LanternDelegate,handler : String!,params : Dictionary<String,String>?, requestId : String?) {
-        self.delegate = delegate
-        self.handler = handler
-        self.requestId = requestId
+    public init(url : String!,method: HTTPMethod,params : [String:String]?, hasBodyData:Bool = false) {
+        self.url = url
+        self.method = method
         self.params = params
+        self.hasBodyData = hasBodyData
     }
     
-    func appendHeader(param: [String:String]){
+    public func appendHeader(param: [String:String]){
         for (key,value) in param{
             headers[key] = value
         }
     }
     
-    //MARK: - HTTP Post and Call
+    //MARK: - HTTP Request
     
-    func call() {
-        
-        self.handler = self.handler.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        Alamofire.request(self.handler,parameters : params, headers : headers).responseJSON { response in
-            print("URL Called : \(String(describing: response.request))")
-            if response.response != nil{
+    public func emit(completion: @escaping (S?, HTTPURLResponse?, String?) -> ()) {
+        let encoding: ParameterEncoding = self.hasBodyData ? JSONEncoding.default : URLEncoding.default
+        print("""
+            Request Called: \(url ?? "") |
+            Headers: \(headers) |
+            Method: \(method.rawValue) |
+            Params: \(String(describing: params)) |
+            """)
+        //TODO: Handle stand-alone authentication
+        Alamofire.request(self.url, method: method, parameters: params, encoding: encoding , headers: headers)
+//            .authenticate(user: UserManager.shared.getPhone(), password: UserManager.shared.getToken())
+            .responseJSON {
+                response in
                 
-                let res = Mapper<S>().map(JSONObject: response.result.value)
-                let err = Mapper<E>().map(JSONObject: response.result.value)
-                switch response.response!.statusCode {
-                case 200 ..< 300 :
-                    self.delegate?.onSuccess(result: res, requestId: self.requestId)
-                    break
-                case 401:
-                    //FIXME: - unauthorized
-                    print("***Error*** : Unauthorized")
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
-                default:
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
-                }
-            }else{
-                self.delegate?.onTimeOut(error: "Connection Error", requestId: self.requestId)
-            }
-        }
-    }
-    
-    /// Post without body
-    func post(){
-        
-        Alamofire.request(self.handler, method: .post, parameters: params, encoding: JSONEncoding.default , headers: headers).responseJSON {
-            response in
-            switch response.result {
-            case .success:
-                let res = Mapper<S>().map(JSONObject: response.result.value)
-                let err = Mapper<E>().map(JSONObject: response.result.value)
-                switch response.response?.statusCode ?? 401{
-                case 200 :
+                //TODO: Handle global Loading
+                print("Status Code: \(response.response?.statusCode ?? 0)")
+                switch response.result {
+                case .success:
+                    switch response.response?.statusCode ?? 600{
+                    case 200 :
+                        if let data = response.data{
+                            do{
+                                let res = try JSONDecoder().decode(S.self, from: data)
+                                completion(res,response.response,nil)
+                            }catch let error{
+                                print(error)
+                                completion(nil,response.response,nil)
+                            }
+                            
+                        }
+                        break
+                    case 401 :
+                        //Unauthorized
+                        completion(nil,response.response ,nil)
+                    default :
+                        print("Status Code : \(String(describing: response.response?.statusCode))")
+                        completion(nil,response.response ,nil)
+                        break
+                    }
                     
-                    self.delegate?.onSuccess(result: res, requestId: self.requestId)
                     break
-                    
-                default :
-                    self.delegate?.onError(error: err, requestId: self.requestId)
-                    break
+                case .failure: // Time out
+                    if let errData = response.data{
+                        let msg = String(data: errData, encoding: .utf8) ?? "Could not connect to server"
+                        completion(nil,response.response ,msg)
+                    }else{
+                        completion(nil,response.response ,nil)
+                    }
                 }
-                
-                break
-            case .failure(let error):
-                self.delegate?.onTimeOut(error: error.localizedDescription, requestId: self.requestId)
-            }
-        }
-    }
-    
-    
-    /// Post function with body - only one param is needed in case there is a prepared object
-    /// convert that object to json string and use bodyString else if creating parameters
-    /// in a Dictionary convert it to data and use bodyData
-    /// - Parameters:
-    ///   - bodyString: body in json format casted to string
-    ///   - bodyData: body in Dictionary format casted to Data
-    func post(bodyString: String?, bodyData: Data?){
-        
-        var request = URLRequest(url: URL(string: self.handler)!)
-        request.httpMethod = HTTPMethod.post.rawValue
-        request.allHTTPHeaderFields = headers
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let body = bodyString {
-            let data = (body.data(using: .utf8))! as Data
-            request.httpBody = data
-        }
-        
-        if let body = bodyData {
-            request.httpBody = body
-        }
-        
-        Alamofire.request(request).responseJSON {
-            response in
-            print("Post URL Called : \(response.request!)")
-            let res = Mapper<S>().map(JSONObject: response.result.value)
-            let err = Mapper<E>().map(JSONObject: response.result.value)
-            switch response.response?.statusCode ?? 401 {
-            case 200 ... 300 :
-                self.delegate?.onSuccess(result: res, requestId: self.requestId)
-                break
-            default :
-                self.delegate?.onError(error: err, requestId: self.requestId) //FIXME: - Unathorized
-                break
-            }
         }
     }
 }
 
-class MGError{
-    static let CONNECTION_ERROR : Int = 8009
-    static let UNATHORIZED : Int = 8010
-}
 
 
-//MARK: - MultiPart Uploader
 
-protocol UploadFormDataDelegate : class {
-     func didUploadedSuccesful(result : Any? , requestId: String)
-     func didUploadFailed(error: String? , requestId: String)
-}
-
-class UploadFormData<BaseResult:BaseMappable>{ //FIXME: Make it universal for images and pdf
-    var delegate : UploadFormDataDelegate?
-    var requestId = ""
+class UploadFormData<S:Codable>{ //FIXME: Make it universal for images and pdf
+    
+    
+    
     // import Alamofire
-    func uploadWithAlamofire(file : Any , parameters : [String:String]?,destinationUrl: String,requestId: String?) {
+    class func uploadWithAlamofire(file : UIImage ,headers: [String:String], parameters : [String:String]?,destinationUrl: String,completion: @escaping (S?, HTTPURLResponse?, String?) -> ()) {
         
-        //        let imageName = "file"//imageName
-        //        let fileName = "file.jpg"//fileName
+        var baseHeaders: [String:String] = ["Content-Type": "application/json","accept": "application/json"]
+        let imageName = "image"//imageName
+        let fileName = "image.jpg"//fileName
         
-        if let reqId = requestId {
-            self.requestId = reqId
+        
+        for (key,value) in headers{
+            baseHeaders[key] = value
         }
-        
-        //        if imageName == nil {
-        //            imageName = "file"
-        //        }
-        //        if fileName == nil {
-        //            fileName = "file.png"
-        //        }
-        
-        let headers: HTTPHeaders = [:]
+//        let username = UserManager.shared.getPhone()
+//        let password = UserManager.shared.getToken()
+//
+//        let credentialData = "\(username):\(password)".data(using: .utf8)
+//        let base64Credentials = credentialData!.base64EncodedData()
+//        baseHeaders["Authorization"] = "\(base64Credentials)"
         
         Alamofire.upload(multipartFormData: { multipartFormData in
             
-            if parameters != nil {
+            if parameters != nil { // body data
                 for (key, value) in parameters! {
                     multipartFormData.append((value).data(using: .utf8)!, withName: key)
                 }
             }
             
-            //            if let imageData = UIImageJPEGRepresentation(Image, 0.7) {
-            //                multipartFormData.append(imageData, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
-            //            }
-            
-            //            multipartFormData.append(pdfData, withName: "pdfDocuments", fileName: namePDF, mimeType:"application/pdf")
+            if let imageData = file.jpegData(compressionQuality: 1) {
+                multipartFormData.append(imageData, withName: imageName, fileName: fileName, mimeType: "image/jpeg")
+            }else{
+                //                            multipartFormData.append(pdfData, withName: "pdfDocuments", fileName: namePDF, mimeType:"application/pdf")
+                //
+            }
             
         }, to: destinationUrl, method: .post, headers: headers,
            encodingCompletion: { encodingResult in
@@ -205,15 +134,28 @@ class UploadFormData<BaseResult:BaseMappable>{ //FIXME: Make it universal for im
             case .success(let upload, _, _):
                 upload.responseJSON { response in
                     
-                    let res = Mapper<BaseResult>().map(JSONObject: response.result.value)
                     
                     switch response.result {
                     case .success:
                         print("jsonResponse ==== ", response)
-                        self.delegate?.didUploadedSuccesful(result: res ,requestId: self.requestId)
+                        if let data = response.data {
+                            var res : S?
+                            do {
+                                res = try JSONDecoder().decode(S.self, from: data)
+                            }catch{
+                                res = nil
+                            }
+                            completion(res, response.response, nil)
+                        }
+                        
                     case .failure(let error):
                         print("error ==== ", error)
-                        self.delegate?.didUploadFailed(error: "Upload failed, try again" , requestId: self.requestId)
+                        if let errData = response.data{
+                            let msg = String(data: errData, encoding: .utf8) ?? "Could not connect to server"
+                            completion(nil,response.response ,msg)
+                        }else{
+                            completion(nil,response.response ,nil)
+                        }
                     }
                 }
             case .failure(let encodingError):
